@@ -1,0 +1,20 @@
+{
+  "name": "24HMP_acompcor_4GS_spikes-FD5",
+  "description": "24HMP+acompcor+4GSR",
+  "confounds":
+  {
+    "wm": "False",
+    "csf": "False",
+    "gs":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "motion":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "acompcor": "True"
+  },
+  "aroma": "False",
+  "spikes":
+    {"fd_th": 0.5,
+     "dvars_th": 3}
+}

@@ -1,0 +1,8 @@
+include RestingfMRI_Denoise/parcellation/*.npy
+include RestingfMRI_Denoise/parcellation/*.nii.gz
+include RestingfMRI_Denoise/templates/mni*/*.nii
+include RestingfMRI_Denoise/pipelines/*.json
+include RestingfMRI_Denoise/utils/report_templates/report_template.html
+include RestingfMRI_Denoise/utils/report_templates/*.css
+include RestingfMRI_Denoise/utils/report_templates/script.js
+include requirements.txt

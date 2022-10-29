@@ -1,0 +1,24 @@
+{
+  "name": "24HMP_8Phys_4GS_spikes-FD5",
+  "description": "24HMP+8Phys+4GSR",
+  "confounds":
+  {
+    "wm":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "csf":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "gs":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "motion":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "acompcor": "False"
+  },
+  "aroma": "False",
+  "spikes":
+    {"fd_th": 0.5,
+     "dvars_th": 3}
+}

@@ -1,0 +1,20 @@
+{
+  "name": "6HMP_acompcor_1GS_spikes-FD2",
+  "description": "6HMP+acompcor+1GSR",
+  "confounds":
+  {
+    "wm": "False",
+    "csf": "False",
+    "gs":
+      {"temp_deriv": "False",
+       "quad_terms": "False"},
+    "motion":
+      {"temp_deriv": "False",
+       "quad_terms": "False"},
+    "acompcor": "True"
+  },
+  "aroma": "False",
+  "spikes":
+    {"fd_th": 0.2,
+     "dvars_th": 3}
+}

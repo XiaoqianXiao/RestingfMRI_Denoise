@@ -1,0 +1,16 @@
+{
+  "name": "6HMP_acompcor",
+  "description": "6HMP+acompcor",
+  "confounds":
+  {
+    "wm": "False",
+    "csf": "False",
+    "gs": "False",
+    "motion":
+      {"temp_deriv": "False",
+       "quad_terms": "False"},
+    "acompcor": "True"
+  },
+  "aroma": "False",
+  "spikes": "False"
+}

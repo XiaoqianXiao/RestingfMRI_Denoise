@@ -1,0 +1,14 @@
+{
+  "name": "Null",
+  "description": "Reference pipeline with no denoising strategy applied.",
+  "confounds":
+  {
+    "wm": "False",
+    "csf": "False",
+    "gs": "False",
+    "motion": "False",
+    "acompcor": "False"
+  },
+  "aroma": "False",
+  "spikes": "False"
+}

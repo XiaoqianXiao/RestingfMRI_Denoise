@@ -1,0 +1,154 @@
+from os.path import join
+from glob import glob
+import pandas as pd
+import json
+from nipype.interfaces.base import (
+    BaseInterface, BaseInterfaceInputSpec, traits, File, TraitedSpec, SimpleInterface,
+    InputMultiObject, ImageFile, Directory
+    )
+from nipype.utils.filemanip import split_filename
+from RestingfMRI_Denoise.utils.confound_prep import *
+
+class ConfoundsInputSpec(BaseInterfaceInputSpec):
+    pipeline = traits.Dict(
+        desc="Denoising pipeline",
+        mandatory=True)
+    conf_raw = File(
+        exist=True,
+        desc="Confounds table",
+        mandatory=True)
+    fmri_prep_aroma = ImageFile(
+        desc='ICA-Aroma preprocessed fMRI file',
+        mandatory=False)
+    conf_json = File(
+        exist=True,
+        desc="Details aCompCor",
+        mandatory=True)
+    entities = traits.Dict(
+        usedefault=True,
+        desc='Per-file entities to include in filename')
+    output_dir = File(          # needed to save data in other directory
+        desc="Output path")     # TODO: Implement temp dir
+
+
+class ConfoundsOutputSpec(TraitedSpec):
+    conf_prep = File(
+        exists=True,
+        desc="Preprocessed confounds table")
+    conf_summary = traits.Dict(
+        exists=True,
+        desc="Confounds summary")
+    pipeline_name = traits.Str(desc="Name of denoising strategy")
+
+class Confounds(SimpleInterface):
+    input_spec = ConfoundsInputSpec
+    output_spec = ConfoundsOutputSpec
+    def _run_interface(self, runtime):
+        pipeline_name = self.inputs.pipeline['name']
+        fname = self.inputs.conf_raw
+        json_path = self.inputs.conf_json
+        tmpAROMA = self.inputs.fmri_prep_aroma
+        conf_df_raw = pd.read_csv(fname, sep='\t')        
+        #prepare for generating confounds after AROMA
+        if self.inputs.pipeline['aroma']:
+            path, base, _ = split_filename(fname)  # Path can be removed later
+            cur_mask = glob(path + '/*rest*space-MNI152NLin2009cAsym*brain*mask.nii*')[0]
+            AromaConf_file = join(path, f"{base}_AROMA.tsv")
+      
+            cur_segm = glob(fname.split('/ses-')[0]+'/anat/*MNI152NLin2009cAsym_res-2_dseg.nii.gz')[0]
+            path_segm, base_segm, _ = split_filename(cur_segm)
+            tmpAROMAwm = join(path_segm, f"{base_segm}_wm.nii.gz")
+            tmpAROMAcsf = join(path_segm, f"{base_segm}_csf.nii.gz")
+            conf_df_aroma = get_aroma_regressor(conf_df_raw, cur_mask, cur_segm, AromaConf_file, tmpAROMAwm, tmpAROMAcsf, tmpAROMA)
+            conf_df_raw = conf_df_aroma        
+        # Load aCompCor list
+        with open(json_path, 'r') as json_file:
+            js = json.load(json_file)
+        a_comp_cor_csf, a_comp_cor_wm = ([] for _ in range(2))
+        for i in js.keys():
+            if i.startswith('a_comp_cor'):
+                if js[i]['Mask'] == 'CSF' and js[i]['Retained']:
+                    a_comp_cor_csf.append(i)
+                if js[i]['Mask'] == 'WM' and js[i]['Retained']:
+                    a_comp_cor_wm.append(i)
+        a_comp_cor = a_comp_cor_csf[:5] + a_comp_cor_wm[:5]
+        # Preprocess confound table according to pipeline
+        conf_df_prep = prep_conf_df(conf_df_raw, self.inputs.pipeline, a_comp_cor)
+        # Create new filename and save
+        path, base, _ = split_filename(fname)  # Path can be removed later
+        fname_prep = join(self.inputs.output_dir, f"{base}_prep_pipeline-{pipeline_name}.tsv")  # use output path
+        conf_df_prep.to_csv(fname_prep, sep='\t', index=False)        
+        # Creates dictionary with summary measures
+        n_spikes = conf_df_prep.filter(regex='spike', axis=1).sum().sum()
+        mean_fd = conf_df_raw["framewise_displacement"].mean()
+        max_fd = conf_df_raw["framewise_displacement"].max()
+        n_timepoints = len(conf_df_raw)
+        try:
+            session = self.inputs.entities['session']
+        except KeyError:
+            session = 0
+        conf_summary = {
+                        "subject": [self.inputs.entities['subject']],
+                        "session": [session],
+                        "task": [self.inputs.entities['task']],
+                        "mean_fd": [mean_fd],
+                        "max_fd": [max_fd],
+                        "n_spikes": [n_spikes],
+                        "perc_spikes": [(n_spikes/n_timepoints)*100],
+                        "n_conf": [len(conf_df_prep.columns)],
+                        "include": [inclusion_check(n_timepoints, mean_fd, max_fd, n_spikes, 0.2)]
+                        }
+        self._results['conf_prep'] = fname_prep
+        self._results['conf_summary'] = conf_summary
+        self._results['pipeline_name'] = self.inputs.pipeline['name']
+        return runtime
+
+def inclusion_check(n_timepoints, mean_fd, max_fd, n_spikes, fd_th):
+    """
+    Checking if participant is recommended to be excluded from analysis
+    based on motion parameters and spikes regressors.
+    Inputs
+    -------
+    n_timepoints: number of timepoints
+    mean_fd: mean framewise_displacement (FD)
+    max_fd: maximum FD
+    n_spikes: number of spikes
+    fd_th: threshold for mean FD
+    Outputs
+    -------
+    returns 0 if subject should be excluded due to head motion
+    or 1 if there is no reason to exclude subject based on submitted threshold.
+    """
+    if mean_fd > fd_th:
+        return 0
+    elif max_fd > 5:
+        return 0
+    elif n_spikes/n_timepoints > 0.40:
+        return 0
+    else:
+        return 1
+
+class GroupConfoundsInputSpec(BaseInterfaceInputSpec):
+    conf_summary = traits.List(
+        exists=True,
+        desc="Confounds summary")
+    output_dir = File(          # needed to save data in other directory
+        desc="Output path")     # TODO: Implement temp dir
+    pipeline_name = traits.List(mandatory=True)
+
+class GroupConfoundsOutputSpec(TraitedSpec):
+    group_conf_summary = File(
+        exists=True,
+        desc="Confounds summary")
+
+class GroupConfounds(SimpleInterface):
+    input_spec = GroupConfoundsInputSpec
+    output_spec = GroupConfoundsOutputSpec
+    def _run_interface(self, runtime):
+        group_conf_summary = pd.DataFrame()
+        for summary, pipeline_name in zip(self.inputs.conf_summary, self.inputs.pipeline_name):
+            group_conf_summary = group_conf_summary.append(pd.DataFrame.from_dict(summary))
+        fname = join(self.inputs.output_dir, f"{pipeline_name}_group_conf_summary.tsv")
+        group_conf_summary.to_csv(fname, sep='\t', index=False)
+        self._results['group_conf_summary'] = fname
+        return runtime

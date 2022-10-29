@@ -1,0 +1,22 @@
+{
+  "name": "24HMP_8Phys_spikes-FD2",
+  "description": "24HMP+8Phys",
+  "confounds":
+  {
+    "wm":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "csf":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "gs": "False",
+    "motion":
+      {"temp_deriv": "True",
+       "quad_terms": "True"},
+    "acompcor": "False"
+  },
+  "aroma": "False",
+  "spikes":
+    {"fd_th": 0.2,
+     "dvars_th": 3}
+}

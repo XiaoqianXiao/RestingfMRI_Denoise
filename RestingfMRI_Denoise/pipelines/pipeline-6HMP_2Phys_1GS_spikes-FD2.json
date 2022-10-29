@@ -1,0 +1,24 @@
+{
+  "name": "6HMP_2Phys_1GS_spikes-FD2",
+  "description": "6HMP+2Phys+1GSR",
+  "confounds":
+  {
+    "wm":
+      {"temp_deriv": "False",
+       "quad_terms": "False"},
+    "csf":
+      {"temp_deriv": "False",
+       "quad_terms": "False"},
+    "gs":
+      {"temp_deriv": "False",
+       "quad_terms": "False"},
+    "motion":
+      {"temp_deriv": "False",
+       "quad_terms": "False"},
+    "acompcor": "False"
+  },
+  "aroma": "False",
+  "spikes":
+    {"fd_th": 0.2,
+     "dvars_th": 3}
+}

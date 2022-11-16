@@ -1,5 +1,6 @@
 # modified from fmriprep
 FROM python:slim AS src
+RUN pip install -r requirements.txt
 RUN pip install build
 RUN apt-get update && \
     apt-get install -y --no-install-recommends git
@@ -28,8 +29,6 @@ RUN apt-get update && \
 ENV DEBIAN_FRONTEND="noninteractive" \
     LANG="en_US.UTF-8" \
     LC_ALL="en_US.UTF-8"  
-    
-RUN pip install -r requirements.txt
 
 # Installing RestingfMRI_Denoise
 COPY --from=src /src/RestingfMRI_Denoise/dist/*.whl .

@@ -5,7 +5,6 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends git
 COPY . /src/RestingfMRI_Denoise
 RUN python -m build /src/RestingfMRI_Denoise
-RUN pip install -r /src/RestingfMRI_Denoise/requirements.txt
 
 # Use Ubuntu 20.04 LTS
 FROM ubuntu:focal-20210416

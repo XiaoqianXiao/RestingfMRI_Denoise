@@ -29,5 +29,5 @@ if __name__ == '__main__':
                                                    '*build_tests*']),
         include_package_data=True,
         install_requires=requirements,
-        scripts=[join(__dir_path, 'RestingfMRI_Denoise', 'scripts', 'RestingfMRI_Denoise')]
+        scripts=[join('RestingfMRI_Denoise', 'scripts', 'RestingfMRI_Denoise')]
     )

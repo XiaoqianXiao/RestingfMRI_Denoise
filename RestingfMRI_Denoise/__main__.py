@@ -25,11 +25,11 @@ def get_parser() -> argparse.ArgumentParser:
     """
     parser = argparse.ArgumentParser()
     parser.add_argument("bids_dir",
-                    help="Path do preprocessed BIDS dataset.")
+                    help="Path to fmriprep preprocessed BIDS dataset.")
     parser.add_argument('-sub', "--subjects",
                         nargs='+',
                         default=[],
-                        help="List of subjects")
+                        help="List of subjects, separated with spaces.")
     parser.add_argument('-ses', "--sessions",
                         nargs='+',
                         default=[],

@@ -12,5 +12,5 @@ pydot
 psutil
 scipy
 seaborn
-sklearn
+sklearn<0.14.0
 traits

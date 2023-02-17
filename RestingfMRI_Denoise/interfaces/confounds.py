@@ -48,11 +48,12 @@ class Confounds(SimpleInterface):
         fname = self.inputs.conf_raw
         json_path = self.inputs.conf_json
         tmpAROMA = self.inputs.fmri_prep_aroma
-        conf_df_raw = pd.read_csv(fname, sep='\t')        
+        conf_df_raw = pd.read_csv(fname, sep='\t') 
+        taskID = self.inputs.entities['task']
         #prepare for generating confounds after AROMA
         if self.inputs.pipeline['aroma']:
             path, base, _ = split_filename(fname)  # Path can be removed later
-            cur_mask = glob(path + '/*rest*space-MNI152NLin2009cAsym*brain*mask.nii*')[0]
+            cur_mask = glob(path + '/*' + taskID + '*space-MNI152NLin2009cAsym*brain*mask.nii*')[0]
             AromaConf_file = join(path, f"{base}_AROMA.tsv")
       
             cur_segm = glob(fname.split('/ses-')[0]+'/anat/*MNI152NLin2009cAsym_res-2_dseg.nii.gz')[0]

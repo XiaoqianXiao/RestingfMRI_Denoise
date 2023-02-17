@@ -49,3 +49,4 @@ COPY --from=src /src/RestingfMRI_Denoise/dist/*.whl .
 RUN /opt/conda/bin/python -m pip install --no-cache-dir $( ls *.whl )[all]
 
 WORKDIR /tmp
+ENTRYPOINT ["/opt/conda/bin/RestingfMRI_Denoise"]

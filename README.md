@@ -10,7 +10,9 @@ fMRIprep (by Esteban et al.);<br>
 Fmriprep_denoising (by Scott Burwell);<br> 
 Denoiser (by Chris Gorgolewski et al.);<br> 
 fMRIDenoise (by Karolina Finc et al.);<br> 
-XCP imaging pipeline (by Rastko Ciric et al.)
+XCP imaging pipeline (by Rastko Ciric et al.);<br> 
+scripts structual followed [fmridenoise](https://github.com/compneuro-ncu/fmridenoise) and XCP imaging pipeline, also referred [fmriprep_denoising](https://github.com/sjburwell/fmriprep_denoising) for regressor calculation.
+ 
 
 ## Setup:
 The RestingfMRI_Denoise using fMRIprep outputs as input. Before running RestingfMRI_Denoise, you must run fmripep first.

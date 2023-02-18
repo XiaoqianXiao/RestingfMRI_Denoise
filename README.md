@@ -11,8 +11,8 @@ Fmriprep_denoising (by Scott Burwell);<br>
 Denoiser (by Chris Gorgolewski et al.);<br> 
 fMRIDenoise (by Karolina Finc et al.);<br> 
 XCP imaging pipeline (by Rastko Ciric et al.)
-Scripts were adapted from https://github.com/compneuro-ncu/fmridenoise.git
-Also refered https://github.com/sjburwell/fmriprep_denoising.git
+Scripts were adapted from https://github.com/compneuro-ncu/fmridenoise.git,<br>
+Also refered https://github.com/sjburwell/fmriprep_denoising.git.<br>
 
 ## Setup:
 The RestingfMRI_Denoise using fMRIprep outputs as input. Before running RestingfMRI_Denoise, you must run fmripep first.

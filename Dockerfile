@@ -50,3 +50,5 @@ RUN /opt/conda/bin/python -m pip install --no-cache-dir $( ls *.whl )[all]
 
 RUN pip install poetry && \
     rm -rf /root/.cache/pip
+    
+ENTRYPOINT ["/opt/conda/bin/RestingfMRI_Denoise"]

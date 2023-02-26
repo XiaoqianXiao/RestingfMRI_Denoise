@@ -43,6 +43,9 @@ ENV PATH="/opt/conda/bin:$PATH" \
     LANG="C.UTF-8" \
     LC_ALL="C.UTF-8" \
     PYTHONNOUSERSITE=1
+    
+RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> $HOME/.bashrc && \
+    echo "conda activate base" >> $HOME/.bashrc
 
 # Installing RestingfMRI_Denoise
 COPY --from=src /src/RestingfMRI_Denoise/dist/*.whl .

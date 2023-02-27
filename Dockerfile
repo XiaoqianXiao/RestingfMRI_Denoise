@@ -44,6 +44,12 @@ ENV PATH="/opt/conda/bin:$PATH" \
     LC_ALL="C.UTF-8" \
     PYTHONNOUSERSITE=1
     
+# Create a shared $HOME directory
+RUN useradd -m -s /bin/bash -G users RestingfMRI_Denoise
+WORKDIR /home/RestingfMRI_Denoise
+ENV HOME="/home/RestingfMRI_Denoise" \
+    LD_LIBRARY_PATH="/usr/lib/x86_64-linux-gnu:$LD_LIBRARY_PATH"
+
 RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> $HOME/.bashrc && \
     echo "conda activate base" >> $HOME/.bashrc
 
@@ -51,7 +57,10 @@ RUN echo ". /opt/conda/etc/profile.d/conda.sh" >> $HOME/.bashrc && \
 COPY --from=src /src/RestingfMRI_Denoise/dist/*.whl .
 RUN /opt/conda/bin/python -m pip install --no-cache-dir $( ls *.whl )[all]
 
-RUN pip install poetry && \
-    rm -rf /root/.cache/pip
-    
+RUN find $HOME -type d -exec chmod go=u {} + && \
+    find $HOME -type f -exec chmod go=u {} + && \
+    rm -rf $HOME/.npm $HOME/.conda $HOME/.empty
+
+ENV IS_DOCKER_8395080871=1
+
 ENTRYPOINT ["/opt/conda/bin/RestingfMRI_Denoise"]

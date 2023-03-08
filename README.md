@@ -75,6 +75,7 @@ The speed of running the tool itself is about: 2m per .nii.gz file.
 * Flywheel <br />
     Please see [here](https://github.com/XiaoXiaoqian/flywheel_RestingfMRI_Denoise) for more details.
 ## Quality Control Metrics
+4 metrics were calculated. See more details below:
 * QC-FC correlations
 Cross-subjects pearson correlation between movement(i.e. mean framewise displacement (mFD) [Power et al., 2012](https://www-sciencedirect-com.stanford.idm.oclc.org/science/article/pii/S1053811911011815?via%3Dihub)) and functional connectivity calculated for each pair of regions after noise correction. The smaller the better.
 * QC-FC distancedependence

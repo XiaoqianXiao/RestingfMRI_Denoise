@@ -74,4 +74,12 @@ The speed of running the tool itself is about: 2m per .nii.gz file.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[list of pipelines build in tool](https://github.com/XiaoXiaoqian/flywheel_RestingfMRI_Denoise/blob/main/docs/pipelines).<br>
 * Flywheel <br />
     Please see [here](https://github.com/XiaoXiaoqian/flywheel_RestingfMRI_Denoise) for more details.
-
+## Quality Control Metrics
+* QC-FC correlations
+Cross-subjects pearson correlation between movement(i.e. mean framewise displacement (mFD)  [Power et al., 2012](https://www-sciencedirect-com.stanford.idm.oclc.org/science/article/pii/S1053811911011815?via%3Dihub)) and functional connectivity calculated for each pair of regions after noise correction.
+* QC-FC distancedependence
+The Spearman correlation between FD-FC correlations and the euclidean distance between brain regions [Parkes et al., 2018](https://pubmed.ncbi.nlm.nih.gov/29278773/).<br>
+* FC Density
+FC distributions.
+* tDOF-loss
+The loss in temporal degrees of freedom (tDOF) sustained due to noise correction, calculated as the number of nuisance regressors input to the general linear model used to model noise in the BOLD data. 

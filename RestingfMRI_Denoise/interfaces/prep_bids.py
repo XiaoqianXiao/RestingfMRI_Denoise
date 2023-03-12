@@ -123,7 +123,7 @@ class BIDSGrab(SimpleInterface):
                     with open(dataset_desc_path, 'r') as f:
                         dataset_desc = json.load(f)
                     #scope.append(dataset_desc['PipelineDescription']['Name'])
-                    scope.append(dataset_desc['GeneratedBy']['Name'])
+                    scope.append(dataset_desc['GeneratedBy'][0]['Name'])
                 except FileNotFoundError as e:
                     raise Exception(f"{derivative_path} should contain" +
                                     " dataset_description.json file") from e

@@ -1,11 +1,12 @@
+import os
 from os.path import exists
+import glob
 import json
 import jsonschema
 import copy
 import typing as t
 import re
 from bids.layout import parse_file_entities, writing
-
 
 _pipeline_valid_keys = ["name", "descrtiption", "confounds"]
 type_checker = jsonschema.Draft4Validator.VALIDATORS

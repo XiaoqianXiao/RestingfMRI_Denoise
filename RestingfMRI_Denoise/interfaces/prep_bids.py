@@ -122,7 +122,8 @@ class BIDSGrab(SimpleInterface):
                 try:
                     with open(dataset_desc_path, 'r') as f:
                         dataset_desc = json.load(f)
-                    scope.append(dataset_desc['GeneratedBy'][0]['Name'])
+                    pipeline = dataset_desc['GeneratedBy'] 
+                    scope.append(pipeline['Name'])
                 except FileNotFoundError as e:
                     raise Exception(f"{derivative_path} should contain" +
                                     " dataset_description.json file") from e
@@ -216,7 +217,8 @@ class BIDSGrab(SimpleInterface):
         fmri_prep, fmri_prep_aroma, conf_raw, conf_json, entities = ([] for _ in
                                                                      range(5))
         tr_dict = {} 
-        for fmri_file in layout.get(scope=scope, **filter_fmri):
+        #for fmri_file in layout.get(scope=scope, **filter_fmri):
+        for fmri_file in layout.get(**filter_fmri):
             # Extract TRs             
             example_file = fmri_file  
             task = layout.get_metadata(example_file.path)['TaskName']
@@ -232,8 +234,10 @@ class BIDSGrab(SimpleInterface):
             filter_conf.update(filter_entities)
             filter_conf_json.update(filter_entities)
 
-            conf_file = layout.get(scope=scope, **filter_conf)
-            conf_json_file = layout.get(scope=scope, **filter_conf_json)
+            #conf_file = layout.get(scope=scope, **filter_conf)
+            #conf_json_file = layout.get(scope=scope, **filter_conf_json)
+            conf_file = layout.get(**filter_conf)
+            conf_json_file = layout.get(**filter_conf_json)
 
             if not conf_file:
                 raise FileNotFoundError(
@@ -265,7 +269,8 @@ class BIDSGrab(SimpleInterface):
 
             filter_fmri_aroma.update(
                 filter_entities)  # Add specific fields to constrain search
-            fmri_aroma_file = layout.get(scope=scope, **filter_fmri_aroma)
+            #fmri_aroma_file = layout.get(scope=scope, **filter_fmri_aroma)
+            fmri_aroma_file = layout.get(**filter_fmri_aroma)
 
             if not fmri_aroma_file:
                 raise FileNotFoundError(

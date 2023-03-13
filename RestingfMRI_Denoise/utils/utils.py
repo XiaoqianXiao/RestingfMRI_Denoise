@@ -73,6 +73,9 @@ def swap_booleans(dictionary: dict, inplace: bool=True) -> dict:  # TODO: Extend
             dictionary[key] = cast_bool(dictionary[key])
     return dictionary
 
+def is_IcaAROMA(pipeline: dict) -> bool:
+    return cast_bool(pipeline["aroma"])
+
 if __name__ == '__main__':
     #  rudimentary test/proof of work
     dicto = load_pipeline_from_json("../pipelines/pipeline-24HMP_8Phys_spikes-FD2.json")

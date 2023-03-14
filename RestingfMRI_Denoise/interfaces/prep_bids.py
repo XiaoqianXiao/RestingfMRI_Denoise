@@ -115,22 +115,35 @@ class BIDSGrab(SimpleInterface):
                             for d in derivatives_]
 
             # Establish right scope keyword for arbitrary packages
-            scope = []
-            for derivative_path in derivatives_:
-                dataset_desc_path = os.path.join(derivative_path,
-                                                 'dataset_description.json')
+        scope = []
+        for derivative_path in derivatives_valid:
+            dataset_desc_path = os.path.join(derivative_path,
+                                             'dataset_description.json')
+            if exists(dataset_desc_path):
+                with open(dataset_desc_path, 'r') as f:
+                    dataset_desc = json.load(f)
+            else:
+                raise MissingFile(f"{derivative_path} should contain" +
+                                  " dataset_description.json file")
+            try:
+                major, minor, patch = (int(element) for element in str(dataset_desc['BIDSVersion']).split('.'))
+            except Exception:
+                raise Exception(f"Unable to parse bids version ({dataset_desc['BIDSVersion']}) into 3 parts")
+            if major == 1 and minor <= 3:
                 try:
-                    with open(dataset_desc_path, 'r') as f:
-                        dataset_desc = json.load(f)
                     scope.append(dataset_desc['PipelineDescription']['Name'])
-                except FileNotFoundError as e:
-                    raise Exception(f"{derivative_path} should contain" +
-                                    " dataset_description.json file") from e
                 except KeyError as e:
-                    raise Exception(f"Key 'PipelineDescription.Name' is " +
-                                    "required in {dataset_desc_path} file") from e
+                    raise KeyError("Key 'PipelineDescription.Name' is "
+                                      f"required in {dataset_desc_path} file") from e
+            else:
+                pipeline = None
+                try:
+                    for pipeline in dataset_desc['GeneratedBy']:
+                        scope.append(pipeline['Name'])
+                except KeyError as e:
+                    raise KeyError(f"Unable to extract Name from GeneratedBy: {pipeline} in file {dataset_desc_path}")
 
-            return derivatives_, scope
+        return derivatives_valid, scope
 
         def validate_option(layout, option, kind='task'):
             """ Validate BIDS query filters provided by the user.

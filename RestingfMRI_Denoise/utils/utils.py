@@ -1,12 +1,7 @@
-import os
 from os.path import exists
-import glob
 import json
 import jsonschema
 import copy
-import typing as t
-import re
-from bids.layout import parse_file_entities, writing
 
 _pipeline_valid_keys = ["name", "descrtiption", "confounds"]
 type_checker = jsonschema.Draft4Validator.VALIDATORS
@@ -79,6 +74,7 @@ def swap_booleans(dictionary: dict, inplace: bool=True) -> dict:  # TODO: Extend
     return dictionary
 
 if __name__ == '__main__':
+    #  rudimentary test/proof of work
     dicto = load_pipeline_from_json("../pipelines/pipeline-24HMP_8Phys_spikes-FD2.json")
     print(dicto)
     print(swap_booleans(dicto, True))

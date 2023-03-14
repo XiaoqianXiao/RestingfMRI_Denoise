@@ -56,29 +56,23 @@ class BIDSGrab(SimpleInterface):
         (2) confound regressor tables,
         (3) entities for corresponding files,
         (4) TR values for available tasks.
-
     Returns:
         fmri_prep: list of files
             List containing all paths to available preprocessed functional files.
             Files are searched using BIDSLayout.get() method with filters specifying
             extensions ".nii" or ".nii.gz", suffix "bold" and extension "prep"
             corresponding to preprocessed images.
-
         fmri_prep_aroma: ...
-
         conf_raw: list of files
             List containing paths to confound regressors files. Elements of conf_raw
             list correspond to fmri_prep elements such that each regressor file is
             related to one imaging file.
-
         conf_json: ...
-
         entities: list of dictionaries
             The entities list contains a list of entity dictionaries. Elements of
             entities list correspond to fmri_prep elements such that each entity
             describe one imaging files. Entities provide BIDS specific information
             about subject, session (if there is more than one), task and datatype.
-
         tr_dict: dictionary
             Contains information about TR setting for each requested task. If task
             are not specified, all tasks found are included.
@@ -97,7 +91,6 @@ class BIDSGrab(SimpleInterface):
                     Path to bids root directory.
                 derivatives: str or list(str)
                     Derivatives to use for denoising.
-
             Returns:
                 derivatives_: list
                     Validated derivatives list.
@@ -115,39 +108,40 @@ class BIDSGrab(SimpleInterface):
                             for d in derivatives_]
 
             # Establish right scope keyword for arbitrary packages
-        scope = []
-        for derivative_path in derivatives_valid:
-            dataset_desc_path = os.path.join(derivative_path,
-                                             'dataset_description.json')
-            if exists(dataset_desc_path):
-                with open(dataset_desc_path, 'r') as f:
-                    dataset_desc = json.load(f)
-            else:
-                raise MissingFile(f"{derivative_path} should contain" +
-                                  " dataset_description.json file")
-            try:
-                major, minor, patch = (int(element) for element in str(dataset_desc['BIDSVersion']).split('.'))
-            except Exception:
-                raise Exception(f"Unable to parse bids version ({dataset_desc['BIDSVersion']}) into 3 parts")
-            if major == 1 and minor <= 3:
+            scope = []
+            for derivative_path in derivatives_:
+                dataset_desc_path = os.path.join(derivative_path,
+                                                 'dataset_description.json')
+                if os.path.exists(dataset_desc_path):
+                    with open(dataset_desc_path, 'r') as f:
+                        dataset_desc = json.load(f)
+                else:
+                    raise MissingFile(f"{derivative_path} should contain" +
+                                      " dataset_description.json file")
                 try:
-                    scope.append(dataset_desc['PipelineDescription']['Name'])
-                except KeyError as e:
-                    raise KeyError("Key 'PipelineDescription.Name' is "
-                                      f"required in {dataset_desc_path} file") from e
-            else:
-                pipeline = None
-                try:
-                    for pipeline in dataset_desc['GeneratedBy']:
-                        scope.append(pipeline['Name'])
-                except KeyError as e:
-                    raise KeyError(f"Unable to extract Name from GeneratedBy: {pipeline} in file {dataset_desc_path}")
+                    major, minor, patch = (int(element) for element in str(dataset_desc['BIDSVersion']).split('.'))
+                except Exception:
+                    raise Exception(f"Unable to parse bids version ({dataset_desc['BIDSVersion']}) into 3 parts")
+                if major == 1 and minor <= 3:
+                    try:
+                        scope.append(dataset_desc['PipelineDescription']['Name'])
+                    except KeyError as e:
+                        raise KeyError("Key 'PipelineDescription.Name' is "
+                                          f"required in {dataset_desc_path} file") from e
+                else:
+                    pipeline = None
+                    try:
+                        for pipeline in dataset_desc['GeneratedBy']:
+                            scope.append(pipeline['Name'])
+                    except KeyError as e:
+                        raise KeyError(f"Unable to extract Name from GeneratedBy: {pipeline} in file {dataset_desc_path}")
 
-        return derivatives_valid, scope
+            print('scope: ' + scope[0])
+            print('derivative:' + derivatives_[0])
+            return derivatives_, scope
 
         def validate_option(layout, option, kind='task'):
             """ Validate BIDS query filters provided by the user.
-
             Args:
                 layout: bids.layout.layout.BIDSLayout
                     Lightweight class representing BIDS project file tree.
@@ -156,7 +150,6 @@ class BIDSGrab(SimpleInterface):
                 kind: string
                     Type of query. Available options are 'task', 'session' and
                     'subject'.
-
             Returns:
                 option_: list
                     Validated filter values.

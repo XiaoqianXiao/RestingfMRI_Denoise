@@ -204,7 +204,8 @@ class BIDSGrab(SimpleInterface):
         filter_fmri = {
             'extension': ['nii', 'nii.gz'],
             'suffix': 'bold',
-            'desc': 'preproc'
+            'desc': 'preproc',
+            'space': 'MNI152NLin2009cAsym'
         }
         filter_fmri_aroma = {
             'extension': ['nii', 'nii.gz'],

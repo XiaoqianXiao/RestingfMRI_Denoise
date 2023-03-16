@@ -11,7 +11,7 @@ Fmriprep_denoising (by Scott Burwell);<br>
 Denoiser (by Chris Gorgolewski et al.);<br> 
 fMRIDenoise (by Karolina Finc et al.);<br> 
 XCP imaging pipeline (by Rastko Ciric et al.);<br> 
-scripts structual followed fmridenoise and XCP imaging pipeline, also referred fmriprep_denoising for regressor calculation.
+scripts followed fmridenoise and XCP imaging pipeline, also referred fmriprep_denoising for regressor calculation.
  
 
 ## Setup:

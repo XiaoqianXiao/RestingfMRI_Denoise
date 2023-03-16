@@ -23,9 +23,9 @@ The speed of running the tool itself is about: 2m per .nii.gz file.
 * Docker image
     ```
     # pull the docker image of RestingfMRI_Denoise
-    docker pull xiaoqianxiao/restingfmri_denoise:0.1.0
+    docker pull xiaoqianxiao/restingfmri_denoise:0.1.1
     # run the image container
-    docker run --rm -ti -v <local directory with data>:<target path in container> --entrypoint=/bin/bash xiaoqianxiao/restingfmri_denoise:0.1.0
+    docker run --rm -ti -v <local directory with data>:<target path in container> --entrypoint=/bin/bash xiaoqianxiao/restingfmri_denoise:0.1.1
     RestingfMRI_Denoise <Your Data set> options
     * This docker image should be able to be run directly through sigularity on Sherlock
     ```
